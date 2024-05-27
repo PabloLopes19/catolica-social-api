@@ -1,4 +1,5 @@
 import { db } from "../config/firebase";
+import { IUser } from "../models/IUsers";
 
 class FirestoreService {
   private collectionName: string;
@@ -18,6 +19,30 @@ class FirestoreService {
       throw new Error("No such document!");
     }
     return doc.data();
+  }
+
+  async createUser(User: IUser) {
+    console.log(User.username.split(" ").length);
+
+    if (User.username.split(" ").length > 1) {
+      return "Invalid Slug";
+    }
+
+    const doc = await db
+      .collection(this.collectionName)
+      .doc(User.username)
+      .get();
+
+    if (!doc.exists) {
+      const docRef = await db
+        .collection(this.collectionName)
+        .doc(User.username);
+      await docRef.set(User);
+
+      return doc;
+    }
+
+    return null;
   }
 }
 
