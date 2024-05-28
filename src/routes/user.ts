@@ -15,12 +15,12 @@ UserRouter.post("/user/create", async (req, res) => {
   const userData = await userService.createUser(req.body);
 
   if (userData == "Invalid Slug") {
-    res.json({ error: userData });
+    res.status(400).json({ error: userData });
     return;
   }
 
   if (!userData) {
-    res.json({ Error: `Nome de usuário indisponível` });
+    res.status(201).json({ Error: `Nome de usuário indisponível` });
   } else {
     const data = await userService.getDocumentById(req.body.username);
     res.status(200).json(data);
